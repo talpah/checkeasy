@@ -1,0 +1,79 @@
+.zoomIndicator {
+    background-color: red;
+    color: #ffffff;
+}
+
+.actionLegend {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255,255,255,.8);
+    border-radius: 6px;
+    padding: 1px 10px;
+}
+
+.actionLegend dt, .actionLegend dd {
+    margin: 3px;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    padding: 2px;
+
+}
+.actionLegend dt {
+    text-align: center;
+    float: left;
+    clear: right;
+    border: 2px outset #dadada;
+    background-color: #e3e3e3;
+    border-radius: 6px;
+    min-width: 26px;
+    font-family: sans-serif;
+}
+
+.actionLegend dd {
+    border: 2px solid transparent;
+    float: right;
+    clear: right;
+}
+
+.zoomDimmer {
+    position: absolute;
+    display: none;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.zoomContainer {
+    padding: 0 20px 0 20px;
+    display: table-cell;
+    top: 50%;
+    vertical-align: middle;
+}
+
+.zoomContainer table {
+    width: 100%;
+    font-size: 200%;
+    padding: 0;
+    border-spacing: 0;
+    /*border-collapse: collapse;*/
+}
+
+.zoomContainer table tbody {
+    background-color: #ffffff;
+}
+
+.zoomContainer table tbody td {
+    border-left: 2px solid #778491;
+}
+
+.zoomContainer table thead {
+    background-color: #778491;
+}
+
+.zoomContainer table thead td {
+    border-left: 2px solid #778491;
+
+}

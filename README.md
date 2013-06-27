@@ -55,7 +55,7 @@ You can now initialize the zoomer:
 ```javascript
         var checkEasy = null;
         $(document).ready(function () {
-            checkEasy = new CheckEasy('dataSource', {
+            checkEasy = new CheckEasy('myDataTable', {
                 "Close": {
                     key   : "Esc",
                     action: function () {

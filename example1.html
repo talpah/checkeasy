@@ -9,39 +9,42 @@
     <script type="text/javascript">
         var checkEasy = null;
         $(document).ready(function () {
-            checkEasy = new CheckEasy('dataSource', {
-                "Close": {
-                    key   : "Esc",
-                    action: function () {
-                        checkEasy.unzoom();
-                    }
-                },
-                "First": {
-                    key   : "Home",
-                    action: function () {
-                        checkEasy.zoomHome();
-                    }
-                },
-                "Last": {
-                    key   : "End",
-                    action: function () {
-                        checkEasy.zoomEnd();
-                    }
-                },
-                "Next" : {
-                    key   : "n, down",
-                    action: function () {
-                        checkEasy.zoomNext();
-                    }
-                },
-                "Prev" : {
-                    key   : "p, up",
-                    action: function () {
-                        checkEasy.zoomPrev();
-                    }
+            checkEasy = new CheckEasy('#dataSource tbody tr', {
+                        "Close": {
+                            key   : "Esc",
+                            action: function () {
+                                checkEasy.unzoom();
+                            }
+                        },
+                        "First": {
+                            key   : "Home",
+                            action: function () {
+                                checkEasy.zoomHome();
+                            }
+                        },
+                        "Last" : {
+                            key   : "End",
+                            action: function () {
+                                checkEasy.zoomEnd();
+                            }
+                        },
+                        "Next" : {
+                            key   : "n, down",
+                            action: function () {
+                                checkEasy.zoomNext();
+                            }
+                        },
+                        "Prev" : {
+                            key   : "p, up",
+                            action: function () {
+                                checkEasy.zoomPrev();
+                            }
 
-                }
-            });
+                        }
+                    },
+                    {
+                        header: $('#dataSource thead tr')
+                    });
         });
     </script>
 </head>

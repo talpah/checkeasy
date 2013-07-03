@@ -1,0 +1,25 @@
+#dataSource tr td {
+    padding: 4px;
+}
+#dataSource tr td:first-child {
+    width: 420px;
+}
+
+.fade-prev-1, .fade-next-1 {
+    opacity: .7;
+    -webkit-transform: scale(0.98);
+    -moz-transform: scale(0.98);
+    -o-transform: scale(0.98);
+}
+.fade-prev-2, .fade-next-2 {
+    opacity: .5;
+    -webkit-transform: scale(0.97);
+    -moz-transform: scale(0.97);
+    -o-transform: scale(0.97);
+}
+.fade-prev-3, .fade-next-3 {
+    opacity: .3;
+    -webkit-transform: scale(0.95);
+    -moz-transform: scale(0.95);
+    -o-transform: scale(0.95);
+}

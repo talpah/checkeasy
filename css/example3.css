@@ -1,25 +1,56 @@
-#dataSource tr td {
-    padding: 4px;
-}
-#dataSource tr td:first-child {
-    width: 420px;
-}
-
 .fade-prev-1, .fade-next-1 {
     opacity: .7;
     -webkit-transform: scale(0.98);
     -moz-transform: scale(0.98);
     -o-transform: scale(0.98);
 }
+
 .fade-prev-2, .fade-next-2 {
     opacity: .5;
     -webkit-transform: scale(0.97);
     -moz-transform: scale(0.97);
     -o-transform: scale(0.97);
 }
+
 .fade-prev-3, .fade-next-3 {
     opacity: .3;
     -webkit-transform: scale(0.95);
     -moz-transform: scale(0.95);
     -o-transform: scale(0.95);
 }
+
+.zoomIndicator {
+    border: 2px solid black;
+    border-radius: 12px 12px 12px 12px;
+    background-color: transparent;
+    color: black;
+}
+
+#dataSource {
+    display: table;
+}
+
+.dataRow {
+    margin: 6px;
+    padding: 6px;
+}
+
+.zoom-empty-row {
+    margin: 6px;
+    padding: 10px;
+}
+
+.dataCell:first-of-type {
+    width: 420px;
+}
+
+.dataCell {
+    min-width: 120px;
+    display: table-cell;
+    padding: 4px;
+}
+
+#dataSourceHeader .dataCell {
+    font-weight: bold;
+}
+

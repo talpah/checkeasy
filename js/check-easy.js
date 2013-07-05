@@ -8,14 +8,15 @@
 var CheckEasy;
 CheckEasy = (function () {
     /* Constructor */
-    function CheckEasy(element, actionList, options) {
-        if (element == undefined || actionList == undefined) {
+    function CheckEasy(elements, actionList, options) {
+        if (elements == undefined || actionList == undefined) {
             throw new Error("CheckEasy: Invalid arguments.");
         }
 
         this._defaultOptions = {
             zoomStyle           : 'single',
             zoomStyleClassPrefix: 'fade-',
+            cycleList           : false,
             inlineSearch        : false,
             header              : null,
             onZoom              : null,
@@ -26,7 +27,7 @@ CheckEasy = (function () {
             this._options[option] = options[option];
         }
 
-        this._elements = null;
+        this._elements = $(elements);
         this._tableHeader = null;
         this._data = [];
         this._dataLength = 0;
@@ -35,7 +36,8 @@ CheckEasy = (function () {
         this._zoomContainer = $('<div id="zoomContainer" class="zoomContainer" />');
         this._actionLegend = $('<dl id="actionLegend" class="actionLegend"></dl>');
         this._actionList = actionList;
-        this.init(element);
+        this._inlineSearchString = '';
+        this.init(elements);
     }
 
     CheckEasy.prototype.init = function (elements) {
@@ -46,46 +48,46 @@ CheckEasy = (function () {
             throw new Error('CheckEasy: Selector returned no elements.');
         }
         this._elements = elements;
-        this._tableHeader = $(this._getOption('header'));
+        this._tableHeader = $(this._getOption('header')).addClass('zoom-header-element');
         this._data = elements.get();
         this._dataLength = this._data.length;
+        this._setupInlineSearch();
         this._setupActions();
         this._zoomContainer.appendTo(this._zoomDimmer);
         this._zoomDimmer.appendTo(document.body);
-
     };
 
     CheckEasy.prototype.zoom = function () {
         this._zoomContainer.html("");
-        var zoomElement = $('<div />');
+        var zoomElement = $('<div id="zoomElement" />');
         if (this._getOption('header')) {
             this._tableHeader.clone().appendTo(zoomElement);
         }
         var zoomStyle = this._getOption('zoomStyle');
+        var element, currentElement;
         if (zoomStyle == 'single') {
-            var element = this.current();
-            var currentElement = element.clone().appendTo(zoomElement);
+            element = this.current();
+            currentElement = element.clone().appendTo(zoomElement);
             element.addClass('zoomIndicator');
         } else if (this.isNumber(zoomStyle)) {
             zoomStyle = parseInt(zoomStyle);
             var zoomStyleClassPrefix = this._getOption('zoomStyleClassPrefix');
-            var currentIndex = 0;
 
+            var currentIndex = zoomStyle, i;
             /* Previous <zoomStyle> elements */
-            currentIndex = zoomStyle;
-            for (var i = (this._cursor - zoomStyle); i < this._cursor; i++) {
-                var element = this.getElementAt(i);
+            for (i = (this._cursor - zoomStyle); i < this._cursor; i++) {
+                element = this.getElementAt(i);
                 element.clone().addClass(zoomStyleClassPrefix + 'prev-' + currentIndex).appendTo(zoomElement);
                 currentIndex--;
             }
             /* Current element */
-            var element = this.current();
-            var currentElement = element.clone().addClass('zoomIndicator').appendTo(zoomElement);
+            element = this.current();
+            currentElement = element.clone().addClass('zoomIndicator').appendTo(zoomElement);
             /* Next <zoomStyle> elements */
             currentIndex = 0;
-            for (var i = (this._cursor + 1); i < (this._cursor + zoomStyle + 1); i++) {
+            for (i = (this._cursor + 1); i < (this._cursor + zoomStyle + 1); i++) {
                 currentIndex++;
-                var element = this.getElementAt(i);
+                element = this.getElementAt(i);
                 element.clone().addClass(zoomStyleClassPrefix + 'next-' + currentIndex).appendTo(zoomElement);
             }
         }
@@ -156,7 +158,9 @@ CheckEasy = (function () {
     CheckEasy.prototype._next = function () {
         this.current().removeClass('zoomIndicator');
         if (this._cursor == this._dataLength - 1) {
-            this._cursor = 0;
+            if (this._getOption('cycleList')) {
+                this._cursor = 0;
+            }
         } else {
             this._cursor++;
         }
@@ -166,7 +170,9 @@ CheckEasy = (function () {
     CheckEasy.prototype._prev = function () {
         this.current().removeClass('zoomIndicator');
         if (this._cursor == 0) {
-            this._cursor = this._dataLength - 1;
+            if (this._getOption('cycleList')) {
+                this._cursor = this._dataLength - 1;
+            }
         } else {
             this._cursor--;
         }
@@ -175,6 +181,7 @@ CheckEasy = (function () {
 
     CheckEasy.prototype._setupActions = function () {
         var actionLegend = this._actionLegend;
+        var $this = this;
         $.each(this._actionList, function (key, element) {
             if (!element.hasOwnProperty('key') || !element.hasOwnProperty('action') || !(typeof element.action == 'function')) {
                 throw new Error('CheckEasy: Invalid actions provided.');
@@ -186,11 +193,18 @@ CheckEasy = (function () {
                 shortcutValue = [element.key];
             }
             $.each(shortcutValue, function (index, shortcutKey) {
-                shortcut.add(shortcutKey.trim(), element.action, {
-                    'type'     : 'keydown',
-                    'propagate': false,
-                    'target'   : document
-                })
+                //noinspection JSValidateTypes
+                $.shortcuts.add({
+                    type   : 'hold',
+                    mask   : shortcutKey.trim(),
+                    handler: function (e) {
+                        if (e.keyCode == $.shortcuts._special.space && $this._inlineSearchString.length > 0) {
+                            /* skip space when searching */
+                        } else {
+                            element.action.call(e);
+                        }
+                    }
+                });
             });
             $('<dt id="action-legend-key-' + element.key + '">' + element.key + '</dt>').click(element.action).appendTo(actionLegend);
             $('<dd id="action-legend-label-' + element.key + '">' + key + '</dd>').click(element.action).appendTo(actionLegend);
@@ -199,19 +213,65 @@ CheckEasy = (function () {
         actionLegend.appendTo(this._zoomDimmer);
     };
 
-    CheckEasy.prototype._handleKeypress = function(event) {
-        console.log(event);
+    CheckEasy.prototype._handleKeypress = function (event, $this) {
+        var container = $('#zoom-search-display');
+        var searchText = container.html();
+        if (event.char) {
+            container.html(searchText + event.char);
+        } else if (event.keyCode == $.shortcuts._special.space && searchText.length > 0) {
+            container.html(searchText + ' ');
+        } else if (event.keyCode == $.shortcuts._special.backspace && searchText.length > 0) {
+            container.html(searchText.substring(0, searchText.length - 1));
+        }
+        $this._inlineSearchString = container.html();
+        if (this._inlineSearchString.length > 0) {
+            $this.performSearch(this._inlineSearchString);
+        } else {
+            $this.clearSearch();
+        }
+        return false;
     };
 
-    CheckEasy.prototype._setupInlineSearch = function() {
-        var keys = 'abcdefghijklmonpqrstuvwxyz1234567890.,'.split('');
+    CheckEasy.prototype.performSearch = function (searchString) {
+        var items = this._elements.filter(":contains('" + searchString + "')");
+        this._data = items.get();
+        this._dataLength = this._data.length;
+        this._cursor = 0;
+        this._elements.easymark('removeHighlight');
+        items.easymark('highlight', searchString);
+        this.zoom();
+    };
+
+    CheckEasy.prototype.clearSearch = function () {
+        this._cursor = 0;
+        this._data = this._elements.get();
+        this._dataLength = this._data.length;
+        this._elements.easymark('removeHighlight');
+        this.zoom();
+    };
+
+    CheckEasy.prototype._setupInlineSearch = function () {
+        if (!this._getOption('inlineSearch')) {
+            return false;
+        }
+        var $this = this;
+        var keys = 'abcdefghijklmonpqrstuvwxyz1234567890'.split('');
+        keys.push('dot');
+        keys.push('comma');
+        keys.push('minus');
+        keys.push('plus');
+        keys.push('backspace');
+        keys.push('space');
         for (var key in keys) {
-            shortcut.add(keys[key], this._handleKeypress, {
-                'type'     : 'keydown',
-                'propagate': false,
-                'target'   : document
+            $.shortcuts.add({
+                type   : 'hold',
+                mask   : keys[key],
+                handler: function (e) {
+                    $this._handleKeypress(e, $this);
+                }
             });
         }
+        return $('<div id="zoom-search-display" />').appendTo(this._actionLegend);
     };
 
     CheckEasy.prototype._getOption = function (option) {

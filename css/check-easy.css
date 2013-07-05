@@ -1,3 +1,6 @@
+.highlight {
+    background-color: yellow;
+}
 .zoomIndicator {
     background-color: red;
     color: #ffffff;
@@ -67,19 +70,19 @@
 .zoom-empty-row {
 }
 
-.zoomContainer table tbody {
+.zoomContainer #zoomElement {
     background-color: #ffffff;
 }
 
-.zoomContainer table tbody td {
+.zoomContainer #zoomElement > * > *{
     border-left: 2px solid #778491;
 }
 
-.zoomContainer table thead {
+.zoomContainer .zoom-header-element {
     background-color: #778491;
 }
 
-.zoomContainer table thead td {
+.zoomContainer zoom-header-element > * {
     border-left: 2px solid #778491;
 
 }

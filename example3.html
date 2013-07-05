@@ -5,27 +5,40 @@
     <link rel="stylesheet" type="text/css" href="css/check-easy.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="css/example3.css" media="all"/>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="js/shortcut.js"></script>
+    <script type="text/javascript" src="js/jquery.shortcuts.js"></script>
+    <script type="text/javascript" src="js/jquery.easyMark.js"></script>
     <script type="text/javascript" src="js/check-easy.js"></script>
     <script type="text/javascript">
         var checkEasy = null;
         $(document).ready(function () {
-            checkEasy = new CheckEasy('#dataSource tbody tr', {
-                        "Close"   : {
+            checkEasy = new CheckEasy('#dataSource .dataRow', {
+                        "Close"     : {
                             key   : "Esc",
                             action: function () {
                                 checkEasy.unzoom();
                             }
                         },
-                        "Validate": {
-                            key   : "Enter",
+                        "Anterior"  : {
+                            key   : "Up",
+                            action: function () {
+                                checkEasy.zoomPrev();
+                            }
+                        },
+                        "Urmator"   : {
+                            key   : "Down",
+                            action: function () {
+                                checkEasy.zoomNext();
+                            }
+                        },
+                        "Validate"  : {
+                            key   : "Return",
                             action: function () {
                                 checkEasy.current().css({backgroundColor: "#66FF99"});
                                 checkEasy.zoomNext();
                             }
                         },
-                        "Skip"    : {
-                            key   : "Space",
+                        "Invalidate": {
+                            key   : "Delete",
                             action: function () {
                                 checkEasy.current().css({backgroundColor: "#FF9966"});
                                 checkEasy.zoomNext();
@@ -34,9 +47,10 @@
                         }
                     },
                     {
-                        zoomStyle: '3',
-                        onZoom   : function (zoomElement) {
-                            console.log(zoomElement);
+                        zoomStyle   : '3',
+                        inlineSearch: true,
+                        onZoom      : function (zoomElement) {
+//                            console.log(zoomElement);
                         }
                     });
         });
@@ -44,116 +58,113 @@
 </head>
 <body>
 <button onclick="checkEasy.zoom();">Start</button>
-<table id="dataSource" class="inline-zoom-table">
-    <thead>
-    <tr>
-        <td>Product</td>
-        <td>Quantity</td>
-        <td>Price</td>
-        <td>Total</td>
-    </tr>
-    </thead>
-    <tbody>
+<div id="dataSourceHeader">
+    <div class="dataRow">
+        <div class="dataCell">Product</div>
+        <div class="dataCell">Quantity</div>
+        <div class="dataCell">Price</div>
+        <div class="dataCell">Total</div>
+    </div>
 
-    <tr>
-        <td>1769181233</td>
-        <td>1944344265</td>
-        <td>1253071717</td>
-        <td>1715578096</td>
-    </tr>
+</div>
+<div id="dataSource" class="inline-zoom-table">
+    <div class="dataRow">
+        <div class="dataCell">1769181233</div>
+        <div class="dataCell">1944344265</div>
+        <div class="dataCell">1253071717</div>
+        <div class="dataCell">1715578096</div>
+    </div>
 
-    <tr>
-        <td>1100050588</td>
-        <td>1726933344</td>
-        <td>1748923828</td>
-        <td>705148901</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">1100050588</div>
+        <div class="dataCell">1726933344</div>
+        <div class="dataCell">1748923828</div>
+        <div class="dataCell">705148901</div>
+    </div>
 
-    <tr>
-        <td>250238535</td>
-        <td>1829716846</td>
-        <td>229360617</td>
-        <td>1179581766</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">250238535</div>
+        <div class="dataCell">1829716846</div>
+        <div class="dataCell">229360617</div>
+        <div class="dataCell">1179581766</div>
+    </div>
 
-    <tr>
-        <td>832326203</td>
-        <td>1151043784</td>
-        <td>2046611154</td>
-        <td>78442419</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">832326203</div>
+        <div class="dataCell">1151043784</div>
+        <div class="dataCell">2046611154</div>
+        <div class="dataCell">78442419</div>
+    </div>
 
-    <tr>
-        <td>930998203</td>
-        <td>328087066</td>
-        <td>1944882400</td>
-        <td>2132393831</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">930998203</div>
+        <div class="dataCell">328087066</div>
+        <div class="dataCell">1944882400</div>
+        <div class="dataCell">2132393831</div>
+    </div>
 
-    <tr>
-        <td>105770424</td>
-        <td>744620545</td>
-        <td>293670132</td>
-        <td>1242380877</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">105770424</div>
+        <div class="dataCell">744620545</div>
+        <div class="dataCell">293670132</div>
+        <div class="dataCell">1242380877</div>
+    </div>
 
-    <tr>
-        <td>1367419617</td>
-        <td>2062851365</td>
-        <td>1039241494</td>
-        <td>473007686</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">1367419617</div>
+        <div class="dataCell">2062851365</div>
+        <div class="dataCell">1039241494</div>
+        <div class="dataCell">473007686</div>
+    </div>
 
-    <tr>
-        <td>67016671</td>
-        <td>1573058275</td>
-        <td>1678593320</td>
-        <td>1174498455</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">67016671</div>
+        <div class="dataCell">1573058275</div>
+        <div class="dataCell">1678593320</div>
+        <div class="dataCell">1174498455</div>
+    </div>
 
-    <tr>
-        <td>1915544411</td>
-        <td>1928831855</td>
-        <td>856731653</td>
-        <td>1625172409</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">1915544411</div>
+        <div class="dataCell">1928831855</div>
+        <div class="dataCell">856731653</div>
+        <div class="dataCell">1625172409</div>
+    </div>
 
-    <tr>
-        <td>2036313419</td>
-        <td>829747583</td>
-        <td>628732545</td>
-        <td>895643366</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">2036313419</div>
+        <div class="dataCell">829747583</div>
+        <div class="dataCell">628732545</div>
+        <div class="dataCell">895643366</div>
+    </div>
 
-    <tr>
-        <td>707174964</td>
-        <td>718955480</td>
-        <td>1223730432</td>
-        <td>1211800426</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">707174964</div>
+        <div class="dataCell">718955480</div>
+        <div class="dataCell">1223730432</div>
+        <div class="dataCell">1211800426</div>
+    </div>
 
-    <tr>
-        <td>1208640615</td>
-        <td>610344141</td>
-        <td>1956420971</td>
-        <td>904014273</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">1208640615</div>
+        <div class="dataCell">610344141</div>
+        <div class="dataCell">1956420971</div>
+        <div class="dataCell">904014273</div>
+    </div>
 
-    <tr>
-        <td>1051318200</td>
-        <td>152428274</td>
-        <td>2090559695</td>
-        <td>625435961</td>
-    </tr>
+    <div class="dataRow">
+        <div class="dataCell">1051318200</div>
+        <div class="dataCell">152428274</div>
+        <div class="dataCell">2090559695</div>
+        <div class="dataCell">625435961</div>
+    </div>
 
-    <tr>
-        <td>302844155</td>
-        <td>10092718</td>
-        <td>1513239665</td>
-        <td>1688686038</td>
-    </tr>
-
-    </tbody>
-</table>
+    <div class="dataRow">
+        <div class="dataCell">302844155</div>
+        <div class="dataCell">10092718</div>
+        <div class="dataCell">1513239665</div>
+        <div class="dataCell">1688686038</div>
+    </div>
+</div>
 </body>
 </html>

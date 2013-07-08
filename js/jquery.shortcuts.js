@@ -165,6 +165,8 @@
                 }
                 if (shortcut.mask.length == 1) {
                     e.char = shortcut.mask;
+                } else if (e.which == $this._special.space) {
+                    e.char = ' ';
                 } else if (e.which == $this._special.comma) {
                     e.char = ',';
                 } else if (e.which == $this._special.dot) {
@@ -174,7 +176,10 @@
                 } else if ($.inArray(e.which, $this._special.plus) > -1) {
                     e.char = '+';
                 }
-                shortcut.handler(e); // Run the shortcut's handler.
+                shortcut.handler.call(
+                    $this,
+                    e
+                );
             }
         });
     };

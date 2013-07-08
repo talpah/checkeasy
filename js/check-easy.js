@@ -53,6 +53,13 @@ CheckEasy = (function () {
         this._dataLength = this._data.length;
         this._setupInlineSearch();
         this._setupActions();
+        var $this = this;
+        this._elements
+            .css({ cursor: 'pointer'})
+            .click(function (event) {
+                $this._cursor = $this._elements.index($(this));
+                $this.zoom();
+            });
         this._zoomContainer.appendTo(this._zoomDimmer);
         this._zoomDimmer.appendTo(document.body);
     };
@@ -198,11 +205,7 @@ CheckEasy = (function () {
                     type   : 'hold',
                     mask   : shortcutKey.trim(),
                     handler: function (e) {
-                        if (e.keyCode == $.shortcuts._special.space && $this._inlineSearchString.length > 0) {
-                            /* skip space when searching */
-                        } else {
-                            element.action.call(e);
-                        }
+                        element.action.call($this, e);
                     }
                 });
             });
@@ -218,8 +221,6 @@ CheckEasy = (function () {
         var searchText = container.html();
         if (event.char) {
             container.html(searchText + event.char);
-        } else if (event.keyCode == $.shortcuts._special.space && searchText.length > 0) {
-            container.html(searchText + ' ');
         } else if (event.keyCode == $.shortcuts._special.backspace && searchText.length > 0) {
             container.html(searchText.substring(0, searchText.length - 1));
         }
@@ -233,12 +234,20 @@ CheckEasy = (function () {
     };
 
     CheckEasy.prototype.performSearch = function (searchString) {
-        var items = this._elements.filter(":contains('" + searchString + "')");
+        var searchStringSegments = searchString.split(' ');
+        var items = this._elements.filter(function (index) {
+            var isFound = true;
+            var searchRow = $(this);
+            $.each(searchStringSegments, function (searchIndex, search) {
+                isFound = isFound && searchRow.text().toLowerCase().indexOf(search) > -1;
+            });
+            return isFound;
+        });
         this._data = items.get();
         this._dataLength = this._data.length;
         this._cursor = 0;
-        this._elements.easymark('removeHighlight');
-        items.easymark('highlight', searchString);
+        this._elements.unhighlight();
+        this._elements.highlight(searchStringSegments);
         this.zoom();
     };
 
@@ -246,7 +255,7 @@ CheckEasy = (function () {
         this._cursor = 0;
         this._data = this._elements.get();
         this._dataLength = this._data.length;
-        this._elements.easymark('removeHighlight');
+        this._elements.unhighlight();
         this.zoom();
     };
 

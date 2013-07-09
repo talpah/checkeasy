@@ -15,7 +15,7 @@ These need to be loaded first
 ```html
     <link rel="stylesheet" type="text/css" href="css/check-easy.css" media="all"/>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="js/shortcut.js"></script>
+    <script type="text/javascript" src="js/jquery.shortcuts.js"></script>
     <script type="text/javascript" src="js/check-easy.js"></script>
 ```
 

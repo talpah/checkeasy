@@ -112,6 +112,7 @@ CheckEasy = (function () {
         this._zoomContainer.html("");
         this.disableDimmer();
         this._cursor = 0;
+        this.clearSearch();
         /* Callback */
         if (this._getOption('onUnZoom')) {
             this._getOption('onUnZoom').call(this);
@@ -224,7 +225,7 @@ CheckEasy = (function () {
         } else if (event.keyCode == $.shortcuts._special.backspace && searchText.length > 0) {
             container.html(searchText.substring(0, searchText.length - 1));
         }
-        $this._inlineSearchString = container.html();
+        $this._inlineSearchString = container.html().trim();
         if (this._inlineSearchString.length > 0) {
             $this.performSearch(this._inlineSearchString);
         } else {
@@ -256,7 +257,9 @@ CheckEasy = (function () {
         this._data = this._elements.get();
         this._dataLength = this._data.length;
         this._elements.unhighlight();
-        this.zoom();
+        this._zoomContainer.unhighlight();
+        this._inlineSearchString = null;
+        $('#zoom-search-display').html('');
     };
 
     CheckEasy.prototype._setupInlineSearch = function () {
